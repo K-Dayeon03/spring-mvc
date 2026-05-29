@@ -1,9 +1,6 @@
 package com.codeit.mvc.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 //@Setter <- Entity에서 Setter는 권장하지 않습니다. 필요한 필드에만 선택적으로 생성합니다.
 @AllArgsConstructor
+@ToString
 public class Post {
 
     @Setter
@@ -39,9 +37,10 @@ public class Post {
         this.category = category;
     }
 
-
     // Lombok의 setter는 완전 기본형, 커스텀을 원한다면 직접 setter를 구축하세요.
     public void setViewCount() {
         this.viewCount++;
     }
+
+
 }

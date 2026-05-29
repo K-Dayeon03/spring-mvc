@@ -2,14 +2,13 @@ package com.codeit.mvc.controller;
 
 import com.codeit.mvc.domain.Category;
 import com.codeit.mvc.domain.Post;
+import com.codeit.mvc.dto.request.PostRequest;
 import com.codeit.mvc.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,6 +35,21 @@ public class PostController {
         model.addAttribute("pageTitle", "✏️ 새 글 작성");
         model.addAttribute("categories", Category.values());
         return "posts/form";
+    }
+
+    @PostMapping
+    public String create(PostRequest postRequest, Model model) {
+        log.info("/posts: Post, 전달된 값: {}", postRequest);
+        Post post = postService.createPost(postRequest);
+
+        // redirect: 재요청
+        // redirect:/posts: 응답을 클라이언트로 내보낸 후 자동 재요청으로 /posts 요청이 들어오도록 유도해 달라.
+        return "redirect:/posts";
+    }
+
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id) {
+        postService.getPostById(id);
     }
 
 
