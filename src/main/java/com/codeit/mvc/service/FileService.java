@@ -2,11 +2,16 @@ package com.codeit.mvc.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,4 +76,37 @@ public class FileService {
         }
 
     }
+
+    public ResponseEntity<Resource> getImage(String fileName) {
+        Path requested = uploadPath.resolve(fileName).normalize();
+
+        if (!Files.exists(requested) || Files.isDirectory(requested)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            Resource resource = new UrlResource(requested.toUri());
+            // 파일의 Content-type이 무엇인지를 정확하게 알려줘야 img 태그가 제대로 화면에 렌더링을 할 수 있음.
+            // "image/jpg", "text/html", "image/png", "application/json"
+            String contentType = Files.probeContentType(requested);
+
+            // 위에서 판단한 Content-Type이 무엇인지 확인이 되지 않을 때는
+            // MediaType.APPLICATION_OCTET_STREAM: 가공되지 않은 순수한 이진 데이터(Binary Data) 스트림으로 취급
+            // MediaType.parseMediaType(contentType): content Type 문자열을 Spring이 이해하고 다룰 수 있는
+            // MediaType 객체로 변환해 주겠다.
+            MediaType mediaType = (contentType == null)
+                    ? MediaType.APPLICATION_OCTET_STREAM
+                    : MediaType.parseMediaType(contentType);
+
+            return ResponseEntity.ok()
+                    .contentType(mediaType)
+                    .body(resource);
+
+        } catch (IOException e) {
+            log.error("파일 응답 실패: fileName={}", fileName, e);
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
 }
+
