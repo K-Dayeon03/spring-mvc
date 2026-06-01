@@ -1,5 +1,6 @@
 package com.codeit.mvc.service;
 
+import com.codeit.mvc.domain.Category;
 import com.codeit.mvc.domain.Post;
 import com.codeit.mvc.dto.request.PostRequest;
 import com.codeit.mvc.dto.response.PostResponse;
@@ -42,8 +43,32 @@ public class PostService {
         post.setViewCount();
         return PostResponse.from(post);
     }
+    public List<PostResponse> searchPost(String keyword, Category category, String sort) {
 
+        List<Post> posts;
 
+        if (category != null) {
+            posts = postRepository.findByCategory(category);
+        } else if (keyword != null && !keyword.trim().isEmpty()) {
+            posts = postRepository.findByTitleOrContentContaining(keyword);
+        } else {
+            posts = postRepository.findAll();
+        }
+
+        if ("viewCount".equals(sort)) {
+            posts = posts.stream()
+                    .sorted(Comparator.comparing(Post::getViewCount).reversed())
+                    .collect(Collectors.toList());
+        } else {
+            posts = posts.stream()
+                    .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
+                    .collect(Collectors.toList());
+        }
+
+        return posts.stream()
+                .map(PostResponse::from)
+                .toList();
+    }
 }
 
 

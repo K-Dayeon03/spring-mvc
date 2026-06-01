@@ -59,6 +59,22 @@ public class PostController {
 
         return "posts/detail";
     }
+    //검색기능
+    @GetMapping("/search")
+    public String search(@RequestParam(required = false) String keyword,
+                         @RequestParam(required = false) Category category,
+                         @RequestParam(required = false, defaultValue = "latest") String sort,
+                         Model model) {
+
+        List<PostResponse> dtoList = postService.searchPost(keyword, category, sort);
+        model.addAttribute("posts", dtoList);
+        model.addAttribute("pageTitle","검색결과");
+        model.addAttribute("categories", category);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+
+        return "posts/list";
+    }
 
 
 }
