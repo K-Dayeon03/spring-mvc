@@ -3,6 +3,7 @@ package com.codeit.mvc.controller;
 import com.codeit.mvc.domain.Category;
 import com.codeit.mvc.domain.Post;
 import com.codeit.mvc.dto.request.PostRequest;
+import com.codeit.mvc.dto.response.PostResponse;
 import com.codeit.mvc.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller // 컨트롤러가 요청에 맞는 뷰 페이지를 결정하게 하겠다. (Server Side Rendering)
@@ -48,8 +50,14 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id) {
-        postService.getPostById(id);
+    public String detail(@PathVariable Long id, Model model) {
+        PostResponse resDto = postService.getPostById(id);
+
+        model.addAttribute("post", resDto);
+        model.addAttribute("pageTitle", resDto.getTitle());
+        model.addAttribute("comments", new ArrayList<>());
+
+        return "posts/detail";
     }
 
 

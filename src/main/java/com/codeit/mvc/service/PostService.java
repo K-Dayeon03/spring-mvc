@@ -2,6 +2,7 @@ package com.codeit.mvc.service;
 
 import com.codeit.mvc.domain.Post;
 import com.codeit.mvc.dto.request.PostRequest;
+import com.codeit.mvc.dto.response.PostResponse;
 import com.codeit.mvc.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +26,24 @@ public class PostService {
     }
 
     public Post createPost(PostRequest postRequest) {
-        Post post = new Post(
-                postRequest.getTitle(),
-                postRequest.getContent(),
-                postRequest.getAuthor(),
-                postRequest.getCategory()
-        );
+        Post post = Post.builder()
+                .author(postRequest.getAuthor())
+                .title(postRequest.getTitle())
+                .content(postRequest.getContent())
+                .category(postRequest.getCategory())
+                .build();
 
         return postRepository.save(post);
     }
 
-    public void getPostById(Long id) {
+    public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         post.setViewCount();
-
+        return PostResponse.from(post);
     }
+
+
 }
 
 
