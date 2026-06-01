@@ -20,5 +20,7 @@ public class PostRequest {
     private String content;
     private String author;
     private Category category;
+    private String thumbnailPath;
+
 
 }

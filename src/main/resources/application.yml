@@ -1,3 +1,12 @@
 spring:
   application:
     name: spring-mvc-practice202605
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB #한 파일당
+      max-request-size: 20MB #한 요청당
+
+blog:
+  file-directory: /Users/apple/Desktop/codeit-13th-develop/spring-upload

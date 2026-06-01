@@ -32,6 +32,7 @@ public class PostService {
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .category(postRequest.getCategory())
+                .thumbnailPath(postRequest.getThumbnailPath())
                 .build();
 
         return postRepository.save(post);
