@@ -1,14 +1,10 @@
 package com.codeit.mvc.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
 
@@ -19,4 +15,16 @@ public class Comment {
     private String author;
     private LocalDateTime createdAt;
 
+    public Comment(){
+        this.createdAt = LocalDateTime.now();
+    }
+
+
+    @Builder
+    public Comment(Long postId, String content, String author) {
+        this();
+        this.postId = postId;
+        this.content = content;
+        this.author = author;
+    }
 }

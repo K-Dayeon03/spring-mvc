@@ -2,8 +2,9 @@ package com.codeit.mvc.service;
 
 import com.codeit.mvc.domain.Category;
 import com.codeit.mvc.domain.Post;
+import com.codeit.mvc.dto.reponse.PostResponse;
 import com.codeit.mvc.dto.request.PostRequest;
-import com.codeit.mvc.dto.response.PostResponse;
+import com.codeit.mvc.exception.PostNotFoundException;
 import com.codeit.mvc.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,19 +29,18 @@ public class PostService {
 
     public Post createPost(PostRequest postRequest) {
         Post post = Post.builder()
-                .author(postRequest.getAuthor())
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .category(postRequest.getCategory())
-                .thumbnailPath(postRequest.getThumbnailPath())
+                .author(postRequest.author())
+                .title(postRequest.title())
+                .content(postRequest.content())
+                .category(postRequest.category())
+                .thumbnailPath(postRequest.thumbnailPath())
                 .build();
-
         return postRepository.save(post);
     }
 
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException(id));
         post.setViewCount();
         return PostResponse.from(post);
     }

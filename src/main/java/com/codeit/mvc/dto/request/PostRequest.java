@@ -12,15 +12,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 // 1. DB 스펙이 곧 입력값 스펙이 되는 건 좋지 않다.
 // 2. 보안적인 문제가 발생할 수 있음. (응답을 줄 때도 DTO를 사용해서 꼭 필요한 정보만 화면단에 내려야 한다)
 // 3. 화면단에서 요구하는 데이터가 Entity보다 더 적을수도 있고, 더 많을수도 있다.
-@Setter @Getter
-@ToString
-public class PostRequest {
 
-    private String title;
-    private String content;
-    private String author;
-    private Category category;
-    private String thumbnailPath;
+public record PostRequest(
+        String title,
+        String content,
+        String author,
+        Category category,
+        String thumbnailPath
+) {
 
+    // 레코드는 특정 필드만 변경하는 setter는 제공되지 않습니다.
+    public PostRequest withThumbnailPath(String fileName) {
+        return new PostRequest(title, content, author, category, fileName);
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
